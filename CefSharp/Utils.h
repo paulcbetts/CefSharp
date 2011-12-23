@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #pragma once
 
+#include "cef_v8.h"
+
 using namespace System;
 
 namespace CefSharp

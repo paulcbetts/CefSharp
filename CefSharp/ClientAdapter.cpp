@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "cef_browser.h"
+#include "cef_frame.h"
 #include "BindingHandler.h"
 #include "ClientAdapter.h"
 #include "CefSharp.h"

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "cef_frame.h"
 #include "CefWpfWebBrowser.h"
 
 namespace CefSharp

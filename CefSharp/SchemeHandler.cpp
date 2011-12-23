@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "cef_browser.h"
+#include "cef_response.h"
 #include "SchemeHandler.h"
 
 namespace CefSharp

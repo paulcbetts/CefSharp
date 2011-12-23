@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+#include "cef_browser.h"
+#include "cef_frame.h"
+#include "cef_task.h"
 #include "CefFormsWebBrowser.h"
 #include "ScriptException.h"
 

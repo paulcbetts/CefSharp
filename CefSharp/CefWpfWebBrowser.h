@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #pragma once
 
+#include "cef_browser.h"
 #include "CefSharp.h"
 #include "WpfClientAdapter.h"
 #include "ICefWebBrowser.h"

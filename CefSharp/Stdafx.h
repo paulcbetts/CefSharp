@@ -6,6 +6,6 @@
 
 #include <vcclr.h>
 #include <gcroot.h>
-#include "cef.h"
+#include "cef_base.h"
 #include "ManagedCefRefPtr.h"
 #include "Utils.h"

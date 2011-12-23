@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #pragma once
 
+#include "cef_stream.h"
+
 using namespace System;
 using namespace System::IO;
 

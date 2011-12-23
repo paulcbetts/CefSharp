@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #pragma once
 
+#include "cef_request.h"
+
 using namespace System;
 using namespace System::Collections::Generic;
 
 namespace CefSharp
 {
-
     public interface class IRequest
     {
         property String^ Url { String^ get(); void set(String^ url); }
@@ -26,7 +27,5 @@ namespace CefSharp
         virtual property String^ Method { String^ get(); }
         virtual IDictionary<String^, String^>^ GetHeaders();
         virtual void SetHeaders(IDictionary<String^, String^>^ headers);
-
     };
-
 }

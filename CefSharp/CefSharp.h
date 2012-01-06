@@ -3,6 +3,7 @@
 #pragma once
 
 #include "cef_app.h"
+#include "cef_version.h"
 #include "Settings.h"
 #include "SchemeHandler.h"
 
@@ -50,7 +51,7 @@ namespace CefSharp
         {
             String^ get()
             {
-                return "trunk r455";
+                return String::Format("r{0}", CEF_REVISION);
             }
         }
 

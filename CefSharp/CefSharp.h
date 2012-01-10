@@ -2,8 +2,8 @@
 #include "stdafx.h"
 #pragma once
 
-#include "cef_app.h"
-#include "cef_version.h"
+#include "include/cef_app.h"
+#include "include/cef_version.h"
 #include "Settings.h"
 #include "SchemeHandler.h"
 

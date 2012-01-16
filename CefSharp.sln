@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CefSharp", "CefSharp\CefSharp.vcproj", "{7B495581-2271-4F41-9476-ACB86E8C864F}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CefSharp", "CefSharp\CefSharp.vcxproj", "{7B495581-2271-4F41-9476-ACB86E8C864F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefUsageTests", "CefUsageTests\CefUsageTests.csproj", "{E8A40E8F-5B1E-4021-BF60-7F7482235E81}"
 EndProject

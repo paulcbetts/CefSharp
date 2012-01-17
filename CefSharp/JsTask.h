@@ -5,6 +5,7 @@
 
 namespace CefSharp
 {
+	/* TODO: This relies on the libcef patch in the patches folder
     class JsTask : public CefV8Task
     {
         gcroot<ICefWebBrowser^> _browser;
@@ -25,5 +26,5 @@ namespace CefSharp
 
         IMPLEMENT_REFCOUNTING(JsTask);
     };
-
+*/
 }

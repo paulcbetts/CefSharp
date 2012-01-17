@@ -4,6 +4,7 @@
 
 namespace CefSharp
 {
+	/*
     void JsTask::HandleSuccess(CefRefPtr<CefV8Value> result)
     {
         Object^ obj = convertFromCef(result);
@@ -21,5 +22,5 @@ namespace CefSharp
     {
         _browser->SetJsError();
     }
-
+*/
 }

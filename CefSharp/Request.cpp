@@ -4,7 +4,6 @@
 
 namespace CefSharp
 {
-
     String^ CefRequestWrapper::Url::get() 
     {
         return toClr(_wrappedRequest->GetURL());
@@ -52,7 +51,7 @@ namespace CefSharp
         {
             CefString name = toNative(pair->Key);
             CefString value = toNative(pair->Value);
-            hm[name] = value;
+            //hm[name] = value;
         }
 
         _wrappedRequest->SetHeaderMap(hm);

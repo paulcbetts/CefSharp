@@ -66,7 +66,7 @@ namespace CefSharp
             bool success = false;
             if (!IsInitialized)
             {
-                success = CefInitialize(*settings->_cefSettings);
+                success = CefInitialize(*settings->_cefSettings, CefRefPtr<CefApp>());
                 _initialized = success;
             }
             return success;

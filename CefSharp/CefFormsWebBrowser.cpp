@@ -87,13 +87,19 @@ namespace CefSharp
             "})();";
         */
         
+		/*
         CefRefPtr<JsTask> task = new JsTask(this, toNative(script), toNative(scriptUrl), startLine);
         _clientAdapter->GetCefBrowser()->GetMainFrame()->ExecuteJavaScriptTask(static_cast<CefRefPtr<CefV8Task>>(task));
+		*/
 
+		_clientAdapter->GetCefBrowser()->GetMainFrame()->ExecuteJavaScript(toNative(script), toNative(scriptUrl), startLine);
+		
+		/*
         if(!_runJsFinished->WaitOne(timeout))
         {
             throw gcnew TimeoutException(L"Timed out waiting for JavaScript to return");
         }
+		*/
 
         if(_jsError == false) 
         {

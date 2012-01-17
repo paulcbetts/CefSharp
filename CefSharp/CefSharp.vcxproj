@@ -131,6 +131,7 @@
     <ClCompile Include="BindingHandler.cpp" />
     <ClCompile Include="CefFormsWebBrowser.cpp" />
     <ClCompile Include="CefSharp.cpp" />
+    <ClCompile Include="CefWpfWebBrowser.cpp" />
     <ClCompile Include="ClientAdapter.cpp" />
     <ClCompile Include="JsTask.cpp" />
     <ClCompile Include="Request.cpp" />
@@ -144,12 +145,14 @@
     </ClCompile>
     <ClCompile Include="StreamAdapter.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="WpfClientAdapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BindingHandler.h" />
     <ClInclude Include="BrowserSettings.h" />
     <ClInclude Include="CefFormsWebBrowser.h" />
     <ClInclude Include="CefSharp.h" />
+    <ClInclude Include="CefWpfWebBrowser.h" />
     <ClInclude Include="ClientAdapter.h" />
     <ClInclude Include="IAfterResponse.h" />
     <ClInclude Include="IBeforeMenu.h" />
@@ -168,6 +171,7 @@
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="StreamAdapter.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="WpfClientAdapter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.ico" />

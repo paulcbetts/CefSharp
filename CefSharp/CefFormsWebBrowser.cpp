@@ -130,7 +130,6 @@ namespace CefSharp
             GetClientRect(hWnd, &rect);
             windowInfo.SetAsChild(hWnd, rect);
 
-
             CefBrowser::CreateBrowser(windowInfo, static_cast<CefRefPtr<CefClient>>(ptr), urlStr, *_settings->_browserSettings);
         }
     }

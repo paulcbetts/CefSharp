@@ -34,4 +34,9 @@ namespace CefSharp
     {
         _wpfBrowserControl->SetCursor(cursor);
     }
+
+	void WpfClientAdapter::OnContentsSizeChange(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int width, int height)
+	{
+		_wpfBrowserControl->UpdateContentSize((double)width, (double)height);
+	}
 }

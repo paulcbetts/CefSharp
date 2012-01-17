@@ -184,6 +184,15 @@ namespace CefSharp
         ConsoleMessage(this, gcnew ConsoleMessageEventArgs(message, source, line));
     }
 
+	void CefWpfWebBrowser::UpdateContentSize(double width, double height)
+	{
+		_contentWidth = width;
+		_contentHeight = height;
+
+		PropertyChanged(this, gcnew PropertyChangedEventArgs(L"ContentWidth"));
+		PropertyChanged(this, gcnew PropertyChangedEventArgs(L"ContentHeight"));
+	}
+
     void CefWpfWebBrowser::WaitForInitialized()
     {
         if (IsInitialized) return;
@@ -194,6 +203,14 @@ namespace CefSharp
 
     void CefWpfWebBrowser::OnApplyTemplate()
     {
+		if (_address == nullptr) 
+		{
+			Visual^ parent = (Visual^)VisualTreeHelper::GetParent(this);
+			HwndSource^ source = (HwndSource^)PresentationSource::FromVisual(parent);
+
+			Setup(source, "about:blank");
+		}
+
         ContentControl::OnApplyTemplate();
 
         _image = (Image^)GetTemplateChild("PART_Image");
@@ -349,10 +366,16 @@ namespace CefSharp
     {
         _width = width;
         _height = height;
-        _buffer = (void *)buffer;
+		if (buffer)
+		{
+			_buffer = (void *)buffer;
+		}
 
-        Dispatcher->Invoke(DispatcherPriority::Render,
-            gcnew Action<WriteableBitmap^>(this, &CefWpfWebBrowser::SetBitmap), _bitmap);
+		if (buffer != 0)
+		{
+			Dispatcher->Invoke(DispatcherPriority::Render,
+				gcnew Action<WriteableBitmap^>(this, &CefWpfWebBrowser::SetBitmap), _bitmap);
+		}
     }
 
     // XXX: don't know how to Invoke a parameterless delegate...
@@ -380,4 +403,33 @@ namespace CefSharp
 
         _bitmap->WritePixels(rect, (IntPtr)_buffer, length, _bitmap->BackBufferStride);
     }
+
+	void CefWpfWebBrowser::Setup(HwndSource^ source, String^ address)
+	{
+		Focusable = true;
+		FocusVisualStyle = nullptr;
+
+		if (!CEF::IsInitialized)
+		{
+			throw gcnew InvalidOperationException("CEF is not initialized");
+		}
+
+		_address = address;
+		_runJsFinished = gcnew AutoResetEvent(false);
+		_browserInitialized = gcnew ManualResetEvent(false);
+		_loadCompleted = gcnew RtzCountdownEvent();
+		_transform = source->CompositionTarget->TransformToDevice;
+
+		source->AddHook(gcnew Interop::HwndSourceHook(this, &CefWpfWebBrowser::SourceHook));
+
+		HWND hWnd = static_cast<HWND>(source->Handle.ToPointer());
+		CefWindowInfo window;
+		window.SetAsOffScreen(hWnd);
+
+		_clientAdapter = new WpfClientAdapter(this);
+		CefRefPtr<WpfClientAdapter> ptr = _clientAdapter.get();
+
+		CefBrowserSettings settings;
+		CefBrowser::CreateBrowser(window, static_cast<CefRefPtr<CefClient>>(ptr), toNative(address), settings);
+	}
 }

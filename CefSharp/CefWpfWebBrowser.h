@@ -50,9 +50,13 @@ namespace CefSharp
         void *_buffer;
         WriteableBitmap^ _bitmap;
 
+		double _contentWidth;
+		double _contentHeight;
+
     private:
         void SetCursor(SafeFileHandle^ handle);
         IntPtr SourceHook(IntPtr hWnd, int message, IntPtr wParam, IntPtr lParam, bool% handled);
+		void Setup(HwndSource^ source, String^ address);
 
     protected:
         virtual Size ArrangeOverride(Size size) override;
@@ -67,34 +71,10 @@ namespace CefSharp
     public:
         CefWpfWebBrowser(HwndSource^ source, String^ address)
         {
-            Focusable = true;
-            FocusVisualStyle = nullptr;
-
-
-
-            if (!CEF::IsInitialized)
-            {
-                throw gcnew InvalidOperationException("CEF is not initialized");
-            }
-
-            _address = address;
-            _runJsFinished = gcnew AutoResetEvent(false);
-            _browserInitialized = gcnew ManualResetEvent(false);
-            _loadCompleted = gcnew RtzCountdownEvent();
-            _transform = source->CompositionTarget->TransformToDevice;
-
-            source->AddHook(gcnew Interop::HwndSourceHook(this, &CefWpfWebBrowser::SourceHook));
-
-            HWND hWnd = static_cast<HWND>(source->Handle.ToPointer());
-            CefWindowInfo window;
-            window.SetAsOffScreen(hWnd);
-
-            _clientAdapter = new WpfClientAdapter(this);
-            CefRefPtr<WpfClientAdapter> ptr = _clientAdapter.get();
-
-            CefBrowserSettings settings;
-            CefBrowser::CreateBrowser(window, static_cast<CefRefPtr<CefClient>>(ptr), toNative(address), settings);
+			Setup(source, address);
         }
+
+		CefWpfWebBrowser() {}
 
         virtual void OnApplyTemplate() override;
 
@@ -109,6 +89,7 @@ namespace CefSharp
         void Print();
         String^ RunScript(String^ script, String^ scriptUrl, int startLine);
         String^ RunScript(String^ script, String^ scriptUrl, int startLine, int timeout);
+		void UpdateContentSize(double width, double height);
 
         virtual void OnInitialized();
 
@@ -172,6 +153,16 @@ namespace CefSharp
         {
             bool get() { return _isLoading; }
         }
+
+		property double ContentWidth
+		{
+			double get() { return _contentWidth; }
+		}
+
+		property double ContentHeight
+		{
+			double get() { return _contentHeight; }
+		}
 
         property bool IsInitialized
         {

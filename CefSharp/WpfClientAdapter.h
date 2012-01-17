@@ -33,6 +33,7 @@ namespace CefSharp
         //virtual void OnPopupSize(CefRefPtr<CefBrowser> browser, const CefRect& rect) OVERRIDE;
         virtual void OnPaint(CefRefPtr<CefBrowser> browser, PaintElementType type, const RectList& dirtyRects, const void* buffer) OVERRIDE;
         virtual void OnCursorChange(CefRefPtr<CefBrowser> browser, CefCursorHandle cursor) OVERRIDE;
+		virtual void OnContentsSizeChange(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int width, int height) OVERRIDE;
 
         IMPLEMENT_LOCKING(WpfClientAdapter);
         IMPLEMENT_REFCOUNTING(WpfClientAdapter);

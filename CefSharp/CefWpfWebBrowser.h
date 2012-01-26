@@ -79,8 +79,6 @@ namespace CefSharp
         virtual void OnApplyTemplate() override;
 
         void Load(String^ url);
-        void WaitForLoadCompletion();
-        void WaitForLoadCompletion(int timeout);
         void Stop();
         void Back();
         void Forward();
@@ -172,6 +170,7 @@ namespace CefSharp
             }
         }
 
+		event EventHandler^ LoadFinished;
         void WaitForInitialized();
 
         virtual event PropertyChangedEventHandler^ PropertyChanged;

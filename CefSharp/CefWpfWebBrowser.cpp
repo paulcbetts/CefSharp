@@ -14,16 +14,6 @@ namespace CefSharp
         _clientAdapter->GetCefBrowser()->GetMainFrame()->LoadURL(toNative(url));
     }
 
-    void CefWpfWebBrowser::WaitForLoadCompletion()
-    {
-        WaitForLoadCompletion(-1);
-    }
-
-    void CefWpfWebBrowser::WaitForLoadCompletion(int timeout)
-    {
-        _loadCompleted->Wait(timeout);
-    }
-
     void CefWpfWebBrowser::Stop()
     {
     	WaitForInitialized();
@@ -164,7 +154,8 @@ namespace CefSharp
 
     void CefWpfWebBrowser::FrameLoadComplete(CefRefPtr<CefFrame> frame)
     {
-        _loadCompleted->Signal();
+		EventArgs^ ea = gcnew EventArgs();
+		LoadFinished(this, ea);
     }
 
     void CefWpfWebBrowser::SetJsResult(String^ result)

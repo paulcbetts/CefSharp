@@ -18,6 +18,7 @@ namespace CefSharp
         property IBeforeResourceLoad^ BeforeResourceLoadHandler;
         property IBeforeMenu^ BeforeMenuHandler;
         property IAfterResponse^ AfterResponseHandler;
+		property bool ShouldOpenLinksInExternalBrowser;
 
         void OnInitialized();
 

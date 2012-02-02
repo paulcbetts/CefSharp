@@ -27,6 +27,7 @@ namespace CefSharp
         bool _canGoForward;
         bool _canGoBack;
         bool _isLoading;
+		bool _shouldOpenLinksInExternalBrowser;
 
         String^ _address;
         String^ _title;
@@ -169,6 +170,12 @@ namespace CefSharp
                 return _clientAdapter.get() != nullptr && _clientAdapter->GetIsInitialized();
             }
         }
+
+		property bool ShouldOpenLinksInExternalBrowser
+		{
+			virtual bool get() { return _shouldOpenLinksInExternalBrowser; }
+			virtual void set(bool value) { _shouldOpenLinksInExternalBrowser = value; }
+		}
 
 		event EventHandler^ LoadFinished;
         void WaitForInitialized();

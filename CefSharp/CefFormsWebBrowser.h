@@ -38,6 +38,8 @@ namespace CefSharp
         RtzCountdownEvent^ _loadCompleted;
         ManualResetEvent^ _browserInitialized;
 
+		bool _shouldOpenLinksInExternalBrowser;
+
     protected:
         virtual void OnHandleCreated(EventArgs^ e) override;
         virtual void OnSizeChanged(EventArgs^ e) override;
@@ -137,6 +139,12 @@ namespace CefSharp
             IAfterResponse^ get() { return _afterResponseHandler; }
             void set(IAfterResponse^ handler) { _afterResponseHandler = handler; }
         }
+
+		property bool ShouldOpenLinksInExternalBrowser
+		{
+			virtual bool get() { return _shouldOpenLinksInExternalBrowser; }
+			virtual void set(bool value) { _shouldOpenLinksInExternalBrowser = value; }
+		}
 
         property bool CanGoForward
         { 

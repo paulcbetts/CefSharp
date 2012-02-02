@@ -18,6 +18,23 @@ namespace CefSharp
             handler->HandleBeforePopup(toClr(url), windowInfo.m_x, windowInfo.m_y, windowInfo.m_nWidth, windowInfo.m_nHeight);
     }
 
+	bool ClientAdapter::OnBeforeBrowse(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request, NavType navType, bool isRedirect)
+	{
+		if (!_browserControl->ShouldOpenLinksInExternalBrowser) 
+		{
+			return false;
+		}
+
+		String^ s;
+		s = toClr(request->GetURL());
+		if (s->ToLowerInvariant()->StartsWith("http")) 
+		{
+			System::Diagnostics::Process::Start(s);
+		}
+			
+		return true;
+	}
+
     void ClientAdapter::OnAfterCreated(CefRefPtr<CefBrowser> browser)
     {
         if(!browser->IsPopup())

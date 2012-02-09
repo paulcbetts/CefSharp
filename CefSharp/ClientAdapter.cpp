@@ -18,21 +18,23 @@ namespace CefSharp
             handler->HandleBeforePopup(toClr(url), windowInfo.m_x, windowInfo.m_y, windowInfo.m_nWidth, windowInfo.m_nHeight);
     }
 
-	bool ClientAdapter::OnBeforeBrowse(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request, NavType navType, bool isRedirect)
-	{		// NAVTYPE_OTHER is issued whenever we explicitly force the navigation via a method		if (!_browserControl->ShouldOpenLinksInExternalBrowser || navType == NAVTYPE_OTHER) 
-		{
-			return false;
-		}
+    bool ClientAdapter::OnBeforeBrowse(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request, NavType navType, bool isRedirect)
+    {
+        // NAVTYPE_OTHER is issued whenever we explicitly force the navigation via a method
+        if (!_browserControl->ShouldOpenLinksInExternalBrowser || navType == NAVTYPE_OTHER) 
+        {
+            return false;
+        }
 
-		String^ s;
-		s = toClr(request->GetURL());
-		if (s->ToLowerInvariant()->StartsWith("http")) 
-		{
-			System::Diagnostics::Process::Start(s);
-		}
-			
-		return true;
-	}
+        String^ s;
+        s = toClr(request->GetURL());
+        if (s->ToLowerInvariant()->StartsWith("http")) 
+        {
+            System::Diagnostics::Process::Start(s);
+        }
+
+        return true;
+    }
 
     void ClientAdapter::OnAfterCreated(CefRefPtr<CefBrowser> browser)
     {

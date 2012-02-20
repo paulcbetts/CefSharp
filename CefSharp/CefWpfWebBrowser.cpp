@@ -186,23 +186,25 @@ namespace CefSharp
 
     void CefWpfWebBrowser::WaitForInitialized()
     {
-        if (IsInitialized) return;
+        //if (IsInitialized) return;
 
-        // TODO: risk of infinite lock
-        //_browserInitialized->WaitOne();
+		if (_address == nullptr) 
+		{
+			Visual^ parent = (Visual^)VisualTreeHelper::GetParent(this);
+			if (parent == nullptr) 
+			{
+				return;
+			}
+
+			HwndSource^ source = (HwndSource^)PresentationSource::FromVisual(parent);
+			Setup(source, "about:blank");
+		}
     }
 
     void CefWpfWebBrowser::OnApplyTemplate()
     {
-		if (_address == nullptr) 
-		{
-			Visual^ parent = (Visual^)VisualTreeHelper::GetParent(this);
-			HwndSource^ source = (HwndSource^)PresentationSource::FromVisual(parent);
-
-			Setup(source, "about:blank");
-		}
-
         ContentControl::OnApplyTemplate();
+		WaitForInitialized();
 
         _image = (Image^)GetTemplateChild("PART_Image");
 

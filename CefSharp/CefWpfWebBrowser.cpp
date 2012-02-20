@@ -188,7 +188,7 @@ namespace CefSharp
     {
         //if (IsInitialized) return;
 
-		if (_address == nullptr) 
+		if (_loadCompleted == nullptr || _address == nullptr)
 		{
 			Visual^ parent = (Visual^)VisualTreeHelper::GetParent(this);
 			if (parent == nullptr) 

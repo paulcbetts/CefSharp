@@ -189,7 +189,7 @@ namespace CefSharp
         if (IsInitialized) return;
 
         // TODO: risk of infinite lock
-        _browserInitialized->WaitOne();
+        //_browserInitialized->WaitOne();
     }
 
     void CefWpfWebBrowser::OnApplyTemplate()
@@ -422,5 +422,8 @@ namespace CefSharp
 
 		CefBrowserSettings settings;
 		CefBrowser::CreateBrowser(window, static_cast<CefRefPtr<CefClient>>(ptr), toNative(address), settings);
+
+		EventArgs^ ea = gcnew EventArgs();
+		SetupFinished(this, ea);
 	}
 }

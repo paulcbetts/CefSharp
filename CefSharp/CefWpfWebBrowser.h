@@ -178,6 +178,7 @@ namespace CefSharp
 		}
 
 		event EventHandler^ LoadFinished;
+		event EventHandler^ SetupFinished;
         void WaitForInitialized();
 
         virtual event PropertyChangedEventHandler^ PropertyChanged;

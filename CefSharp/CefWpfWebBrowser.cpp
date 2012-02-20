@@ -8,7 +8,7 @@ namespace CefSharp
 {
     void CefWpfWebBrowser::Load(String^ url)
     {
-        WaitForInitialized();
+        if (!WaitForInitialized()) return;
 
         _loadCompleted->Reset();
         _clientAdapter->GetCefBrowser()->GetMainFrame()->LoadURL(toNative(url));
@@ -16,21 +16,21 @@ namespace CefSharp
 
     void CefWpfWebBrowser::Stop()
     {
-    	WaitForInitialized();
+        if (!WaitForInitialized()) return;
 
         _clientAdapter->GetCefBrowser()->StopLoad();
     }
 
     void CefWpfWebBrowser::Back()
     {
-    	WaitForInitialized();
+        if (!WaitForInitialized()) return;
 
         _clientAdapter->GetCefBrowser()->GoBack();
     }
 
     void CefWpfWebBrowser::Forward()
     {
-    	WaitForInitialized();
+        if (!WaitForInitialized()) return;
 
         _clientAdapter->GetCefBrowser()->GoForward();
     }
@@ -42,7 +42,7 @@ namespace CefSharp
 
     void CefWpfWebBrowser::Reload(bool ignoreCache)
     {
-    	WaitForInitialized();
+        if (!WaitForInitialized()) return;
 
         if(ignoreCache)
         {
@@ -56,21 +56,21 @@ namespace CefSharp
 
     void CefWpfWebBrowser::Print()
     {
-        WaitForInitialized();
+        if (!WaitForInitialized()) return;
 
         _clientAdapter->GetCefBrowser()->GetMainFrame()->Print();
     }
 
     String^ CefWpfWebBrowser::RunScript(String^ script, String^ scriptUrl, int startLine)
     {
-    	WaitForInitialized();
+        if (!WaitForInitialized()) return nullptr;
 
         return RunScript(script, scriptUrl, startLine, -1);
     }
 
     String^ CefWpfWebBrowser::RunScript(String^ script, String^ scriptUrl, int startLine, int timeout)
     {
-    	WaitForInitialized();
+        if (!WaitForInitialized()) return nullptr;
         
         _jsError = false;
         _jsResult = nullptr;
@@ -184,7 +184,7 @@ namespace CefSharp
 		PropertyChanged(this, gcnew PropertyChangedEventArgs(L"ContentHeight"));
 	}
 
-    void CefWpfWebBrowser::WaitForInitialized()
+    bool CefWpfWebBrowser::WaitForInitialized()
     {
         //if (IsInitialized) return;
 
@@ -193,12 +193,14 @@ namespace CefSharp
 			Visual^ parent = (Visual^)VisualTreeHelper::GetParent(this);
 			if (parent == nullptr) 
 			{
-				return;
+				return false;
 			}
 
 			HwndSource^ source = (HwndSource^)PresentationSource::FromVisual(parent);
 			Setup(source, "about:blank");
 		}
+
+		return true;
     }
 
     void CefWpfWebBrowser::OnApplyTemplate()

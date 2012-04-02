@@ -35,6 +35,13 @@ namespace CefSharp
         _clientAdapter->GetCefBrowser()->GoForward();
     }
 
+    void CefWpfWebBrowser::Copy()
+    {
+        if (!WaitForInitialized()) return;
+
+        //_clientAdapter->GetCefBrowser()->Copy();
+    }
+
     void CefWpfWebBrowser::Reload()
     {
         Reload(false);
@@ -85,7 +92,7 @@ namespace CefSharp
             "})();";
         */
         
-		/*
+        /*
         CefRefPtr<JsTask> task = new JsTask(this, toNative(script), toNative(scriptUrl), startLine);
         _clientAdapter->GetCefBrowser()->GetMainFrame()->ExecuteJavaScriptTask(static_cast<CefRefPtr<CefV8Task>>(task));
 
@@ -93,9 +100,9 @@ namespace CefSharp
         {
             throw gcnew TimeoutException(L"Timed out waiting for JavaScript to return");
         }
-		*/
+        */
 
-		_clientAdapter->GetCefBrowser()->GetMainFrame()->ExecuteJavaScript(toNative(script), toNative(scriptUrl), startLine);
+        _clientAdapter->GetCefBrowser()->GetMainFrame()->ExecuteJavaScript(toNative(script), toNative(scriptUrl), startLine);
 
         if(_jsError == false) 
         {
@@ -154,8 +161,8 @@ namespace CefSharp
 
     void CefWpfWebBrowser::FrameLoadComplete(CefRefPtr<CefFrame> frame)
     {
-		EventArgs^ ea = gcnew EventArgs();
-		LoadFinished(this, ea);
+        EventArgs^ ea = gcnew EventArgs();
+        LoadFinished(this, ea);
     }
 
     void CefWpfWebBrowser::SetJsResult(String^ result)
@@ -175,38 +182,55 @@ namespace CefSharp
         ConsoleMessage(this, gcnew ConsoleMessageEventArgs(message, source, line));
     }
 
-	void CefWpfWebBrowser::UpdateContentSize(double width, double height)
-	{
-		_contentWidth = width;
-		_contentHeight = height;
+    void CefWpfWebBrowser::UpdateContentSize(double width, double height)
+    {
+        _contentWidth = width;
+        _contentHeight = height;
 
-		PropertyChanged(this, gcnew PropertyChangedEventArgs(L"ContentWidth"));
-		PropertyChanged(this, gcnew PropertyChangedEventArgs(L"ContentHeight"));
-	}
+        PropertyChanged(this, gcnew PropertyChangedEventArgs(L"ContentWidth"));
+        PropertyChanged(this, gcnew PropertyChangedEventArgs(L"ContentHeight"));
+    }
 
     bool CefWpfWebBrowser::WaitForInitialized()
     {
         //if (IsInitialized) return;
 
-		if (_loadCompleted == nullptr || _address == nullptr)
-		{
-			Visual^ parent = (Visual^)VisualTreeHelper::GetParent(this);
-			if (parent == nullptr) 
-			{
-				return false;
-			}
+        if (System::ComponentModel::DesignerProperties::GetIsInDesignMode(this)) 
+        {
+            return true;
+        }
 
-			HwndSource^ source = (HwndSource^)PresentationSource::FromVisual(parent);
-			Setup(source, "about:blank");
-		}
+        if (_loadCompleted == nullptr || _address == nullptr)
+        {
+            Visual^ parent = (Visual^)VisualTreeHelper::GetParent(this);
+            if (parent == nullptr) 
+            {
+                return false;
+            }
 
-		return true;
+            HwndSource^ source = (HwndSource^)PresentationSource::FromVisual(parent);
+            Setup(source, "about:blank");
+        }
+
+        return true;
     }
 
     void CefWpfWebBrowser::OnApplyTemplate()
     {
         ContentControl::OnApplyTemplate();
-		WaitForInitialized();
+
+        if (System::ComponentModel::DesignerProperties::GetIsInDesignMode(this)) 
+        {
+            TextBlock^ textBlock = gcnew TextBlock();
+            textBlock->Text = L"This is a Chrome Control";
+            textBlock->HorizontalAlignment = System::Windows::HorizontalAlignment::Center;
+            textBlock->VerticalAlignment = System::Windows::VerticalAlignment::Center;
+
+            Content = textBlock;
+            return;
+        }
+
+        WaitForInitialized();
 
         _image = (Image^)GetTemplateChild("PART_Image");
 
@@ -224,7 +248,10 @@ namespace CefSharp
     {
         try
         {
-            _clientAdapter->GetCefBrowser()->SetSize(PET_VIEW, (int)size.Width, (int)size.Height);
+            if (!System::ComponentModel::DesignerProperties::GetIsInDesignMode(this)) 
+            {
+                _clientAdapter->GetCefBrowser()->SetSize(PET_VIEW, (int)size.Width, (int)size.Height);
+            }
         }
         catch (...)
         {
@@ -236,13 +263,21 @@ namespace CefSharp
 
     void CefWpfWebBrowser::OnGotFocus(RoutedEventArgs^ e)
     {
-        _clientAdapter->GetCefBrowser()->SendFocusEvent(true);
+        if (!System::ComponentModel::DesignerProperties::GetIsInDesignMode(this)) 
+        {
+            _clientAdapter->GetCefBrowser()->SendFocusEvent(true);
+        }
+
         ContentControl::OnGotFocus(e);
     }
 
     void CefWpfWebBrowser::OnLostFocus(RoutedEventArgs^ e)
     {
-        _clientAdapter->GetCefBrowser()->SendFocusEvent(false);
+        if (!System::ComponentModel::DesignerProperties::GetIsInDesignMode(this)) 
+        {
+            _clientAdapter->GetCefBrowser()->SendFocusEvent(false);
+        }
+
         ContentControl::OnLostFocus(e);
     }
 
@@ -312,7 +347,12 @@ namespace CefSharp
     IntPtr CefWpfWebBrowser::SourceHook(IntPtr hWnd, int message, IntPtr wParam, IntPtr lParam, bool% handled)
     {
         handled = false;
-        
+
+        if (System::ComponentModel::DesignerProperties::GetIsInDesignMode(this)) 
+        {
+            return IntPtr::Zero;
+        }
+
         switch(message)
         {
             case WM_KEYDOWN:
@@ -361,16 +401,16 @@ namespace CefSharp
     {
         _width = width;
         _height = height;
-		if (buffer)
-		{
-			_buffer = (void *)buffer;
-		}
+        if (buffer)
+        {
+            _buffer = (void *)buffer;
+        }
 
-		if (buffer != 0)
-		{
-			Dispatcher->Invoke(DispatcherPriority::Render,
-				gcnew Action<WriteableBitmap^>(this, &CefWpfWebBrowser::SetBitmap), _bitmap);
-		}
+        if (buffer != 0)
+        {
+            Dispatcher->Invoke(DispatcherPriority::Render,
+                gcnew Action<WriteableBitmap^>(this, &CefWpfWebBrowser::SetBitmap), _bitmap);
+        }
     }
 
     // XXX: don't know how to Invoke a parameterless delegate...
@@ -399,35 +439,35 @@ namespace CefSharp
         _bitmap->WritePixels(rect, (IntPtr)_buffer, length, _bitmap->BackBufferStride);
     }
 
-	void CefWpfWebBrowser::Setup(HwndSource^ source, String^ address)
-	{
-		Focusable = true;
-		FocusVisualStyle = nullptr;
+    void CefWpfWebBrowser::Setup(HwndSource^ source, String^ address)
+    {
+        Focusable = true;
+        FocusVisualStyle = nullptr;
 
-		if (!CEF::IsInitialized)
-		{
-			throw gcnew InvalidOperationException("CEF is not initialized");
-		}
+        if (!CEF::IsInitialized)
+        {
+            throw gcnew InvalidOperationException("CEF is not initialized");
+        }
 
-		_address = address;
-		_runJsFinished = gcnew AutoResetEvent(false);
-		_browserInitialized = gcnew ManualResetEvent(false);
-		_loadCompleted = gcnew RtzCountdownEvent();
-		_transform = source->CompositionTarget->TransformToDevice;
+        _address = address;
+        _runJsFinished = gcnew AutoResetEvent(false);
+        _browserInitialized = gcnew ManualResetEvent(false);
+        _loadCompleted = gcnew RtzCountdownEvent();
+        _transform = source->CompositionTarget->TransformToDevice;
 
-		source->AddHook(gcnew Interop::HwndSourceHook(this, &CefWpfWebBrowser::SourceHook));
+        source->AddHook(gcnew Interop::HwndSourceHook(this, &CefWpfWebBrowser::SourceHook));
 
-		HWND hWnd = static_cast<HWND>(source->Handle.ToPointer());
-		CefWindowInfo window;
-		window.SetAsOffScreen(hWnd);
+        HWND hWnd = static_cast<HWND>(source->Handle.ToPointer());
+        CefWindowInfo window;
+        window.SetAsOffScreen(hWnd);
 
-		_clientAdapter = new WpfClientAdapter(this);
-		CefRefPtr<WpfClientAdapter> ptr = _clientAdapter.get();
+        _clientAdapter = new WpfClientAdapter(this);
+        CefRefPtr<WpfClientAdapter> ptr = _clientAdapter.get();
 
-		CefBrowserSettings settings;
-		CefBrowser::CreateBrowser(window, static_cast<CefRefPtr<CefClient>>(ptr), toNative(address), settings);
+        CefBrowserSettings settings;
+        CefBrowser::CreateBrowser(window, static_cast<CefRefPtr<CefClient>>(ptr), toNative(address), settings);
 
-		EventArgs^ ea = gcnew EventArgs();
-		SetupFinished(this, ea);
-	}
+        EventArgs^ ea = gcnew EventArgs();
+        SetupFinished(this, ea);
+    }
 }

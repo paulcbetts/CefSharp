@@ -35,13 +35,6 @@ namespace CefSharp
         _clientAdapter->GetCefBrowser()->GoForward();
     }
 
-    void CefWpfWebBrowser::Copy()
-    {
-        if (!WaitForInitialized()) return;
-
-        //_clientAdapter->GetCefBrowser()->Copy();
-    }
-
     void CefWpfWebBrowser::Reload()
     {
         Reload(false);

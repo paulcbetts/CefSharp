@@ -243,7 +243,12 @@ namespace CefSharp
         {
             if (!System::ComponentModel::DesignerProperties::GetIsInDesignMode(this)) 
             {
-                _clientAdapter->GetCefBrowser()->SetSize(PET_VIEW, (int)size.Width, (int)size.Height);
+				PresentationSource^ source = PresentationSource::FromVisual(this);
+				Matrix^ deviceTransform = source->CompositionTarget->TransformToDevice;
+
+				Point^ deviceSize = deviceTransform->Transform(Point(size.Width, size.Height));
+
+                _clientAdapter->GetCefBrowser()->SetSize(PET_VIEW, (int)deviceSize->X, (int)deviceSize->Y);
             }
         }
         catch (...)

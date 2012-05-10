@@ -30,12 +30,6 @@ namespace CefSharp
 
         CefRefPtr<CefBrowser> GetCefBrowser()
         {
-            if (_cefBrowser == nullptr)
-            {
-                //TODO: make own exception type?
-                throw gcnew InvalidOperationException("CefBrowser is not initialized now.");
-            }
-
             return _cefBrowser;
         }
 

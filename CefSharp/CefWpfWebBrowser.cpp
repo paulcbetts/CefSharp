@@ -205,7 +205,7 @@ namespace CefSharp
             Setup(source, "about:blank");
         }
 
-        return true;
+        return _clientAdapter->GetCefBrowser() != NULL;
     }
 
     void CefWpfWebBrowser::OnApplyTemplate()
@@ -239,22 +239,15 @@ namespace CefSharp
 
     Size CefWpfWebBrowser::ArrangeOverride(Size size)
     {
-        try
-        {
-            if (!System::ComponentModel::DesignerProperties::GetIsInDesignMode(this)) 
-            {
-				PresentationSource^ source = PresentationSource::FromVisual(this);
-				Matrix^ deviceTransform = source->CompositionTarget->TransformToDevice;
+		if (!System::ComponentModel::DesignerProperties::GetIsInDesignMode(this) && WaitForInitialized())
+		{
+			PresentationSource^ source = PresentationSource::FromVisual(this);
+			Matrix^ deviceTransform = source->CompositionTarget->TransformToDevice;
 
-				Point^ deviceSize = deviceTransform->Transform(Point(size.Width, size.Height));
+			Point^ deviceSize = deviceTransform->Transform(Point(size.Width, size.Height));
 
-                _clientAdapter->GetCefBrowser()->SetSize(PET_VIEW, (int)deviceSize->X, (int)deviceSize->Y);
-            }
-        }
-        catch (...)
-        {
-            // ArrangeOverride may be called one or more times before Cef is initialized
-        }
+			_clientAdapter->GetCefBrowser()->SetSize(PET_VIEW, (int)deviceSize->X, (int)deviceSize->Y);
+		}
 
         return ContentControl::ArrangeOverride(size);
     }

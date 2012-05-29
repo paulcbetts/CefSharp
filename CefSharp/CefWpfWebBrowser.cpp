@@ -306,6 +306,10 @@ namespace CefSharp
 
         e->Handled = true;
 
+        CaptureMouse();
+        _mouseIsDown = true;
+        _depressedMouseButton = mbt;
+
         _clientAdapter->GetCefBrowser()->SendMouseClickEvent((int)point.X, (int)point.Y, mbt, false, 1);
     }
 
@@ -322,7 +326,21 @@ namespace CefSharp
             mbt = CefBrowser::MouseButtonType::MBT_LEFT;
         }
 
+        ReleaseMouseCapture();
+        _mouseIsDown = false;
+
         _clientAdapter->GetCefBrowser()->SendMouseClickEvent((int)point.X, (int)point.Y, mbt, true, 1);
+    }
+
+    void CefWpfWebBrowser::OnLostMouseCapture(MouseEventArgs^ e)
+    {
+        if (!_mouseIsDown)
+            return;
+
+        _mouseIsDown = false;
+
+        Point point = e->GetPosition(this);
+        _clientAdapter->GetCefBrowser()->SendMouseClickEvent((int)point.X, (int)point.Y, _depressedMouseButton, true, 1);
     }
 
     void CefWpfWebBrowser::SetCursor(CefCursorHandle cursor)

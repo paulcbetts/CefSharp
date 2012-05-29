@@ -54,6 +54,9 @@ namespace CefSharp
 		double _contentWidth;
 		double _contentHeight;
 
+        bool _mouseIsDown;
+        CefBrowser::MouseButtonType _depressedMouseButton;
+
     private:
         void SetCursor(SafeFileHandle^ handle);
         IntPtr SourceHook(IntPtr hWnd, int message, IntPtr wParam, IntPtr lParam, bool% handled);
@@ -68,6 +71,7 @@ namespace CefSharp
         virtual void OnMouseWheel(MouseWheelEventArgs^ e) override;
         virtual void OnMouseDown(MouseButtonEventArgs^ e) override;
         virtual void OnMouseUp(MouseButtonEventArgs^ e) override;
+        virtual void OnLostMouseCapture(MouseEventArgs^ e) override;
 
     public:
         CefWpfWebBrowser(HwndSource^ source, String^ address)

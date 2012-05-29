@@ -304,6 +304,8 @@ namespace CefSharp
             mbt = CefBrowser::MouseButtonType::MBT_LEFT;
         }
 
+        e->Handled = true;
+
         _clientAdapter->GetCefBrowser()->SendMouseClickEvent((int)point.X, (int)point.Y, mbt, false, 1);
     }
 

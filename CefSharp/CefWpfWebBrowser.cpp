@@ -202,6 +202,11 @@ namespace CefSharp
             }
 
             HwndSource^ source = (HwndSource^)PresentationSource::FromVisual(parent);
+            if (source == nullptr)
+            {
+                return false;
+            }
+
             Setup(source, "about:blank");
         }
 

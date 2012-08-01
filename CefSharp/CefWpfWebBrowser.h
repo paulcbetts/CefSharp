@@ -167,6 +167,24 @@ namespace CefSharp
 			double get() { return _contentHeight; }
 		}
 
+		property double ZoomLevel
+		{
+			double get() { 
+				if (!this->IsInitialized) {
+					return 1.0;
+				}
+
+				return _clientAdapter.get()->GetCefBrowser()->GetZoomLevel(); 
+			}
+			void set(double val) {
+				if (!this->IsInitialized) {
+					return;
+				}
+				
+				_clientAdapter.get()->GetCefBrowser()->SetZoomLevel(val);
+			}
+		}
+
         property bool IsInitialized
         {
             bool get()

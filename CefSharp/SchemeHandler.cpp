@@ -6,24 +6,36 @@ namespace CefSharp
 {
     void SchemeHandlerWrapper::GetResponseHeaders(CefRefPtr<CefResponse> response, int64& response_length, CefString& redirectUrl)
     {
-        response->SetMimeType(_mime_type);
-        response->SetStatus(200);
-        response_length = SizeFromStream();
+        if (_response)
+		{
+			if (_response->MimeType)
+			{
+				response->SetMimeType(toNative(_response->MimeType));
+			}
+			response->SetStatus(_response->StatusCode);
+			response_length = _response->Length;
+
+			if (_response->Headers)
+			{
+				//if (_response->Headers.Length > 0)
+				{
+					// TODO: foreach header...
+				}
+			}
+		}
     }
 
     bool SchemeHandlerWrapper::ProcessRequest(CefRefPtr<CefRequest> request, CefRefPtr<CefSchemeHandlerCallback> callback)
     {
         bool handled = false;
-        Stream^ stream;
-        String^ mimeType;
  
         AutoLock lock_scope(this);
 
+		Response^ response = gcnew Response();
         IRequest^ requestWrapper = gcnew CefRequestWrapper(request);
-        if (_handler->ProcessRequest(requestWrapper, mimeType, stream))
+        if (_handler->ProcessRequest(requestWrapper, response))
         {
-            _mime_type = toNative(mimeType);
-            _stream = stream;
+			_response = response;
             callback->HeadersAvailable();
 
             handled = true;
@@ -38,15 +50,16 @@ namespace CefSharp
 
         AutoLock lock_scope(this);
 
-        if(!_stream)
+        if(_response)
         {
-            bytes_read = 0;
-        }
-        else
-        {
-            array<Byte>^ buffer = gcnew array<Byte>(bytes_to_read);
-            int ret = _stream->Read(buffer, 0, bytes_to_read);
-            pin_ptr<Byte> src = &buffer[0];
+			int readBytes = bytes_to_read >= _response->Stream->Length ? bytes_to_read : (int)_response->Stream->Length;
+			
+			_response->Stream->Seek(0, SeekOrigin::Begin);
+            
+			array<Byte>^ buffer = gcnew array<Byte>(readBytes);
+			int ret = _response->Stream->Read(buffer, 0, readBytes);
+            
+			pin_ptr<Byte> src = &buffer[0];
             memcpy(data_out, static_cast<void*>(src), ret);
             bytes_read = ret;
             has_data = true;
@@ -57,24 +70,7 @@ namespace CefSharp
 
     void SchemeHandlerWrapper::Cancel()
     {
-        _stream = nullptr;
-    }
-
-    int SchemeHandlerWrapper::SizeFromStream()
-    {
-        if(!_stream)
-        {
-            return 0;
-        }
-
-        if(_stream->CanSeek)
-        {
-            _stream->Seek(0, SeekOrigin::End);
-            int length = static_cast<int>(_stream->Position);
-            _stream->Seek(0, SeekOrigin::Begin);
-            return length;
-        }
-        return -1;
+        _response = nullptr;
     }
 
     CefRefPtr<CefSchemeHandler> SchemeHandlerFactoryWrapper::Create(CefRefPtr<CefBrowser> browser, const CefString& scheme_name, CefRefPtr<CefRequest> request)

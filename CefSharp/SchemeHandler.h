@@ -2,19 +2,20 @@
 #pragma once
 
 #include "Request.h"
+#include "Response.h"
 
 using namespace System;
 using namespace System::IO;
 
 namespace CefSharp {
 
-public interface class ISchemeHandler
+ public interface class ISchemeHandler
 {
     /// <summary>
-    /// if request is handled return true and set mimeType and stream accordingly.
+    /// if request is handled return true and set response properties accordingly.
     /// if no data the leave stream null
     /// </summary>
-    bool ProcessRequest(IRequest^ request, String^% mimeType, Stream^% stream);
+    bool ProcessRequest(IRequest^ request, Response^% response);
 };
 
 public interface class ISchemeHandlerFactory
@@ -25,11 +26,7 @@ public interface class ISchemeHandlerFactory
 class SchemeHandlerWrapper : public CefSchemeHandler
 {
     gcroot<ISchemeHandler^> _handler;
-    gcroot<Stream^> _stream;
-    CefString _mime_type;
-
-
-    int SizeFromStream();
+    gcroot<Response^> _response;
 
 public:
 

@@ -8,7 +8,7 @@ namespace CefSharp.Example
 {
     public class TestSchemeHandler : ISchemeHandler
     {
-        public bool ProcessRequest(IRequest request, ref string mimeType, ref Stream stream)
+        public bool ProcessRequest(IRequest request, ref Response response)
         {
             string resource = null;
 
@@ -32,8 +32,8 @@ namespace CefSharp.Example
             if (!String.IsNullOrEmpty(resource))
             {
                 byte[] bytes = Encoding.UTF8.GetBytes(resource);
-                stream = new MemoryStream(bytes);
-                mimeType = "text/html";
+                response.Stream.Write(bytes, 0, bytes.Length);
+                response.MimeType = "text/html";
                 return true;
             }
 
